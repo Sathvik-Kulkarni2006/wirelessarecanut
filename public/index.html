@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Arecanut Irrigation</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="eyebrow">ESP32 · ESP-NOW · FIELD MONITORING</div><h1>Smart Arecanut Irrigation</h1><p>Wireless soil-moisture monitoring for two independent rows</p></div>
+  <div class="online"><span class="dot"></span><span id="systemStatus">SYSTEM ONLINE</span></div>
+</header>
+<main>
+  <section class="summary">
+    <article class="metric"><div class="metric-head">ROW 01 <span class="pill dry" id="row1Pill">WATER NEEDED</span></div><div class="big" id="row1Big">32<span>%</span></div><div class="muted">Soil moisture ratio</div><div class="bar"><span id="row1Bar" style="width:32%"></span></div><div class="metric-foot"><span>Valve <b id="row1Valve">OPEN</b></span><span>Threshold: <b id="row1Threshold">45%</b></span></div></article>
+    <article class="metric"><div class="metric-head">ROW 02 <span class="pill good" id="row2Pill">MOISTURE OK</span></div><div class="big" id="row2Big">68<span>%</span></div><div class="muted">Soil moisture ratio</div><div class="bar"><span id="row2Bar" style="width:68%"></span></div><div class="metric-foot"><span>Valve <b id="row2Valve">CLOSED</b></span><span>Threshold: <b id="row2Threshold">45%</b></span></div></article>
+    <article class="metric controller"><div class="metric-head">CENTRAL CONTROLLER <span class="pill blue">CONNECTED</span></div><div class="big">ESP32</div><div class="muted">Wireless protocol</div><div class="protocol">◉ &nbsp; ESP-NOW</div><div class="metric-foot"><span>Rows reporting</span><b id="rowsOnline">2 / 2</b></div></article>
+  </section>
+  <section class="field panel">
+    <div class="section-title"><div><h2>Field layout</h2><p>Top-view illustration · live moisture values are shown per row</p></div><span class="tag">2 ROWS</span></div>
+    <div class="fieldground">
+      <div class="rowfield" id="fieldRow1">
+        <div class="row-label"><b>ROW 01</b><span id="fieldMoist1">32% moisture</span><small id="fieldNeed1">Dry · watering needed</small></div>
+        <div class="trees" aria-label="Arecanut trees row one"></div>
+        <div class="pipe"><span></span></div>
+        <div class="valvebadge"><span class="waterdot"></span><b id="fieldValve1">VALVE OPEN</b></div>
+      </div>
+      <div class="wireless"><span>⌁</span><div><b>ESP-NOW wireless link</b><small>Sensor ESP32 → Central ESP32 → Valve ESP32</small></div><span>⌁</span></div>
+      <div class="rowfield" id="fieldRow2">
+        <div class="row-label"><b>ROW 02</b><span id="fieldMoist2">68% moisture</span><small id="fieldNeed2">Moisture OK</small></div>
+        <div class="trees" aria-label="Arecanut trees row two"></div>
+        <div class="pipe"><span></span></div>
+        <div class="valvebadge"><span class="waterdot"></span><b id="fieldValve2">VALVE CLOSED</b></div>
+      </div>
+    </div>
+    <div class="legend"><span><i class="legend-tree"></i> Arecanut trees</span><span><i class="legend-pipe"></i> Irrigation pipe</span><span><i class="legend-sensor"></i> Sensor location (illustrative)</span></div>
+  </section>
+  <section class="lower">
+    <article class="panel flow"><h2>Wireless communication flow</h2>
+      <div class="flowstep"><span>1</span><div><b>Soil sensor units</b><p>Each row measures its own soil moisture and sends the reading from its ESP32.</p></div></div>
+      <div class="flowstep"><span>2</span><div><b>Central controller</b><p>Receives both readings and compares each value with its configured threshold.</p></div></div>
+      <div class="flowstep"><span>3</span><div><b>Valve units</b><p>Each valve ESP32 receives its row-specific ON/OFF command and controls the relay.</p></div></div>
+      <div class="flowstep"><span>4</span><div><b>Automatic cycle</b><p>Dry soil opens its valve; reaching the target moisture closes it.</p></div></div>
+    </article>
+    <article class="panel controls"><h2>Demo controls</h2><p class="notice">These controls demonstrate the dashboard only. They do not operate physical valves unless the backend is connected to your ESP32 hardware.</p>
+      <label for="rowSelect">Select row</label><select id="rowSelect"><option value="row1">Row 01</option><option value="row2">Row 02</option></select>
+      <label for="moistureInput">Set moisture reading (%)</label><div class="range-line"><input id="moistureInput" type="range" min="0" max="100" value="32"><b id="rangeValue">32%</b></div>
+      <button id="sendReading">Send demo reading</button><button class="secondary" id="simulate">Simulate next cycle</button>
+      <div class="updated">Last update: <span id="lastUpdate">Loading…</span></div>
+    </article>
+  </section>
+  <section class="panel history"><div class="section-title"><div><h2>Recent readings</h2><p>Latest moisture updates received by the backend</p></div><span class="tag">API STATUS: <b id="apiStatus">CHECKING</b></span></div>
+    <div class="tablewrap"><table><thead><tr><th>Time</th><th>Row</th><th>Moisture ratio</th><th>Valve command</th><th>Source</th></tr></thead><tbody id="historyBody"><tr><td colspan="5">Waiting for readings…</td></tr></tbody></table></div>
+  </section>
+  <footer>Smart Arecanut Irrigation · Demo dashboard · Calibrate the sensor and moisture threshold for your actual soil before field deployment.</footer>
+</main>
+<script src="app.js"></script>
+</body></html>
